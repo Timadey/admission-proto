@@ -86,7 +86,6 @@ class AdmissionApplicationController extends Controller
             $application->update(['completed' => !$application->completed]);
         }
 
-        dd($application);
         return redirect(route('application.index'));
     }
 
