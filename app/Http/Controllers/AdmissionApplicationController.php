@@ -17,6 +17,7 @@ class AdmissionApplicationController extends Controller
     public function index()
     {
         $application = auth()->user()->application;
+
         return view('application.index', [
             'application' => $application
         ]);
@@ -71,9 +72,22 @@ class AdmissionApplicationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AdmissionApplication $admissionApplication)
+    public function preview()
     {
-        //
+        return view ('application.preview', ['application' => auth()->user()->application]);
+    }
+
+    public function submitApplication()
+    {
+        $application = auth()->user()->application;
+
+        if ($application->courseApplication && $application->education && $application->personalDetails)
+        {
+            $application->update(['completed' => !$application->completed]);
+        }
+
+        dd($application);
+        return redirect(route('application.index'));
     }
 
     /**

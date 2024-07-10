@@ -71,6 +71,8 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('passport_photographs') => storage_path('app/passport_photographs'),
+        public_path('signatures') => storage_path('app/signatures'),
     ],
 
 ];

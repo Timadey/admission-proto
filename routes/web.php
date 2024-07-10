@@ -18,6 +18,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/application', [AdmissionApplicationController::class, 'index'])->name('application.index');
+    Route::get('/preview', [AdmissionApplicationController::class, 'preview'])->name('application.preview');
+    Route::get('/submit-application', [AdmissionApplicationController::class, 'submitApplication'])->name('application.submit');
     Route::get('/pay-application', [AdmissionApplicationController::class, 'store'])->name('application.store');
     Route::get('/confirm-application-payment', [AdmissionApplicationController::class, 'confirmAppPayment'])->name('application.confirm-app-payment');
 

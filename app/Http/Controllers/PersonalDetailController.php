@@ -24,7 +24,13 @@ class PersonalDetailController extends Controller
      */
     public function create()
     {
-        return view('personal_details.create');
+        return view('personal_details.create', [
+            'application_code' => auth()->user()->application->application_code,
+            'titles' => Title::cases(),
+            'genders' => Gender::cases(),
+            'religions' => Religion::cases(),
+
+        ]);
         
     }
 
@@ -44,9 +50,9 @@ class PersonalDetailController extends Controller
             'local_government' => ['required', 'string', 'max:128'],
             'state_of_origin' => ['required', 'string', 'max:24'],
             'phone_number' => ['required', 'string', 'max:14'],
-            'signature' => ['required', 'image', 'mime:jpg,png', 'max:1024'],
+            'signature' => ['required', 'image', 'max:1024', 'nullable'],
             'signature_url' => [],
-            'passport_photograph' => ['required', 'image', 'mime:jpg,png', 'max:1024'],
+            'passport_photograph' => ['required', 'image', 'max:1024', 'nullable'],
             'passport_photograph_url' => [],
         ]);
 
@@ -60,7 +66,7 @@ class PersonalDetailController extends Controller
             $validated['passport_photograph_url'] = $passport_photograph;
         }
 
-        $personalDetail = auth()->user()->application()->personalDetail()->create($validated);
+        $personalDetail = auth()->user()->application->personalDetails()->create($validated);
         return redirect(route('application.index'));
     }
 
@@ -77,7 +83,14 @@ class PersonalDetailController extends Controller
      */
     public function edit(PersonalDetail $personalDetail)
     {
-        //
+        return view('personal_details.edit', [
+            'application_code' => auth()->user()->application->application_code,
+            'titles' => Title::cases(),
+            'genders' => Gender::cases(),
+            'religions' => Religion::cases(),
+            'personalDetail' => $personalDetail,
+
+        ]);
     }
 
     /**
@@ -85,7 +98,35 @@ class PersonalDetailController extends Controller
      */
     public function update(Request $request, PersonalDetail $personalDetail)
     {
-        //
+        $validated = $request->validate([
+            'title' => ['required', Rule::enum(Title::class)],
+            'surname' => ['required', 'string', 'max:64'],
+            'other_names' => ['required', 'string', 'max:128'],
+            'gender' => ['required', Rule::enum(Gender::class)],
+            'date_of_birth' => ['required', 'date', 'before:today'],
+            'religion' => ['required', Rule::enum(Religion::class)],
+            'current_residential_address' => ['required', 'string', 'max:128'],
+            'local_government' => ['required', 'string', 'max:128'],
+            'state_of_origin' => ['required', 'string', 'max:24'],
+            'phone_number' => ['required', 'string', 'max:14'],
+            'signature' => ['sometimes', 'nullable', 'image', 'max:1024'],
+            'signature_url' => [],
+            'passport_photograph' => ['sometimes', 'nullable', 'image', 'max:1024'],
+            'passport_photograph_url' => [],
+        ]);
+
+        if ($request->hasFile('signature')){
+            $signature = $request->file('signature')->store('signatures');
+            $validated['signature_url'] = $signature;
+        }
+
+        if ($request->hasFile('passport_photograph')){
+            $passport_photograph = $request->file('passport_photograph')->store('passport_photographs');
+            $validated['passport_photograph_url'] = $passport_photograph;
+        }
+
+        $personalDetail = $personalDetail->update($validated);
+        return redirect(route('application.index'));
     }
 
     /**

@@ -22,7 +22,10 @@ class EducationController extends Controller
      */
     public function create()
     {
-        return view('education.create');
+        return view('education.create', [
+            'application_code' => auth()->user()->application->application_code,
+            'examinationTypes' => ExaminationType::cases(),
+        ]);
     }
 
     /**
@@ -37,7 +40,7 @@ class EducationController extends Controller
             'year' => ['required', 'date', 'before:today'],
         ]);
 
-        $education = auth()->user()->application()->education()->create($validated);
+        $education = auth()->user()->application->education()->create($validated);
         return redirect(route('application.index'));
     }
 
@@ -54,7 +57,11 @@ class EducationController extends Controller
      */
     public function edit(Education $education)
     {
-        //
+        return view('education.edit', [
+            'application' => auth()->user()->application,
+            'examination_types' => ExaminationType::cases(),
+            'education' => $education,
+        ]);
     }
 
     /**
@@ -62,7 +69,15 @@ class EducationController extends Controller
      */
     public function update(Request $request, Education $education)
     {
-        //
+        $validated = $request->validate([
+            'examination_type' => ['required', Rule::enum(ExaminationType::class)],
+            'subject_name' => ['required', 'max:128'],
+            'grade' => ['required', 'max:128'],
+            'year' => ['required', 'date', 'before:today'],
+        ]);
+
+        $education = $education->update($validated);
+        return redirect(route('application.index'));
     }
 
     /**
