@@ -1,0 +1,65 @@
+Admission portal
+
+- registration for users to track their admission
+- The admission status 
+    - not registered
+    - paid
+    - processing
+    - admitted
+
+- They register and verify email
+- Can't perfomr any action without being verified
+- Pay for admission
+- Can track their transaction
+- Receive an admission code in email
+- Put their admission code to start registration
+- Fill registration form
+
+
+Models
+- form no (admission code)
+    - user(email)
+    - code, unique
+- course_application blongs to a user, one to one
+    - admission_code change to application code.
+    - first choice
+    - second choice
+- personal_details
+    - admission_code
+    - title (enum, Mr, Mrs, Dr, Ms)
+    - surname
+    - other names
+    - gender (enum, male, female)
+    - date_of_birth
+    - religion (enum, christianity, islam, traditional, others)
+    - current_residential address
+    - local government
+    - state of origin
+    - phone_number
+    - email (prefilled)
+    - signature
+    - passport photograpgh
+- education
+    - admission_code
+    - examination_type (neco, waec, nabteb, gce)
+    - subject_name
+    - grade
+    - year
+- professional_qualifications
+    - admission_code
+    - examination_board
+    - qualification
+    - date
+- professional_organisation
+    - admission_code
+    - organistaion
+    - subject
+    - result
+    - date
+- attestation
+    - admission_code
+    - full name
+    - address
+    - postion held
+    - phone number
+    - signature
