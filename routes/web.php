@@ -10,7 +10,7 @@ use App\Http\Controllers\ProfessionalQualificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
@@ -21,7 +21,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/preview', [AdmissionApplicationController::class, 'preview'])->name('application.preview');
     Route::get('/submit-application', [AdmissionApplicationController::class, 'submitApplication'])->name('application.submit');
     Route::get('/pay-application', [AdmissionApplicationController::class, 'store'])->name('application.store');
-    Route::get('/confirm-application-payment', [AdmissionApplicationController::class, 'confirmAppPayment'])->name('application.confirm-app-payment');
+    // Route::get('/confirm-application-payment', [AdmissionApplicationController::class, 'confirmAppPayment'])->name('application.confirm-app-payment');
 
     Route::get('/course-application/create', [CourseApplicationController::class, 'create'])->name('course-application.create');
     Route::post('/course-application/store', [CourseApplicationController::class, 'store'])->name('course-application.store');

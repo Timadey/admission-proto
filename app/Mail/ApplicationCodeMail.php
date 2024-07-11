@@ -13,13 +13,13 @@ class ApplicationCodeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $application_code;
+    public $user;
     /**
      * Create a new message instance.
      */
-    public function __construct($application_code)
+    public function __construct($user)
     {
-        $this->application_code = $application_code;
+        $this->user = $user;
     }
 
     /**
@@ -28,7 +28,7 @@ class ApplicationCodeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your Admission Application Code is Here',
+            subject: 'Your Admission Application PIN is Here',
         );
     }
 
@@ -38,8 +38,8 @@ class ApplicationCodeMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.application_code',
-            with: ['application_code' => $this->application_code]
+            view: 'emails.application_pin',
+            with: ['user' => $this->user]
         );
     }
 

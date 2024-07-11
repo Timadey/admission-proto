@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\AdmissionApplication;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -27,8 +28,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'application_form_number' => ['required', 'string', 'exists:admission_applications,application_code' ],
+            'application_pin' => ['required', 'string'],
         ];
     }
 
@@ -50,6 +51,31 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+    }
+
+    /**
+     * custom authentication
+     */
+    public function customAuthenticate(): void
+    {
+        $input = $this->only('application_form_number', 'application_pin');
+        $applicationCode = $input['application_form_number'];
+        $applicationPIN = $input['application_pin'];
+
+        $application = AdmissionApplication::where('application_code', $applicationCode)->first();
+
+        if (! $application){
+            throw ValidationException::withMessages([
+                'application_form_number' => "Invalid form number. Please check you email for the form number after successful payment.",
+            ]);
+        }
+        $user = $application->user;
+
+        if (! Auth::attempt(['email' => $user->email, 'password' => $applicationPIN])){
+            throw ValidationException::withMessages([
+                'application_pin' => "Invalid application PIN for this form",
+            ]);
+        }
     }
 
     /**

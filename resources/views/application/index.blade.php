@@ -12,7 +12,7 @@
                     <div class="p-6 text-gray-900 ">
                         @if ($application)
                             @if($application->completed == true)
-                            <p class="mb-4 text-green-600">{{ __("Your application has been submitted and undergoing processing. You can view your submission in the meantime") }}</p>
+                            <p class="mb-4 text-green-600" =>{{ __("Your application has been submitted and undergoing processing. You can view your submission in the meantime") }}</p>
                             @else
                             <p class="mb-4 text-green-600">{{ __("Application fee paid successfully. View or continue your application") }}</p>
                             <p class="mb-4">{{ __("You can fill the forms seperately. When you are done, click the submit application button") }}</p>
