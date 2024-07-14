@@ -1,6 +1,5 @@
 <?php
 
-use App\ExaminationType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('education', function (Blueprint $table) {
+        Schema::create('grades', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('application_code')->constrained('admission_applications', 'application_code');
-            $table->enum('examination_type', ExaminationType::values());
-            $table->year('year');
+            $table->foreignId('education_id')->constrained('education');
+            $table->string('subject_name', 128);
+            $table->string('grade', 64);
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('education');
+        Schema::dropIfExists('grades');
     }
 };

@@ -79,13 +79,24 @@ class AdmissionApplicationController extends Controller
 
     public function submitApplication()
     {
-        $application = auth()->user()->application;
+        $user = auth()->user();
+        $application = $user->application;
 
-        if ($application->courseApplication && $application->education && $application->personalDetails)
+        if (! $application->completed && $application->courseApplication
+                && $application->educations->count() > 0 && $application->personalDetails)
         {
-            $application->update(['completed' => !$application->completed]);
+            AdmissionApplication::where('application_code', $application->application_code)->update(['completed' => true, 'applied_at' => now()]);
         }
+        return redirect(route('application.index'));
+    }
 
+    public function print($application_code)
+    {
+        $application = AdmissionApplication::where('application_code', $application_code)->first();
+        if ($application)
+        {
+            return view('application.print', ['application' => $application]);
+        }
         return redirect(route('application.index'));
     }
 

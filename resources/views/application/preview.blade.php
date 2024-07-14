@@ -32,7 +32,7 @@
                             @if (! $application->completed)
                                 <div class="mt-4 mb-4">
                                     <a style="color:green" href="{{ route('course-application.edit', ['courseApplication' => $application->courseApplication->id ])}}">
-                                        Edit courses
+                                        <x-primary-button>Edit courses</x-primary-button>
                                     </a>
                                 </div>
                             @endif
@@ -104,7 +104,7 @@
                                 @if (! $application->completed)
                                     <div class="mt-4 mb-4">
                                         <a style="color:green" href="{{ route('personal-detail.edit', ['personalDetail' => $application->personalDetails->id ])}}">
-                                            Edit applicant details
+                                            <x-primary-button>Edit applicant details</x-primary-button>
                                         </a>
                                     </div>
                                 @endif
@@ -116,37 +116,75 @@
                         <div class="mt-4 mb-8 p-4 rounded-md shadow-md">
                             <strong>Education and Qualifications </strong>
                             <hr>
-                            @if ($application->education)
-                            <div class="block w-full mt-4">
-                                <label for="examination_type" class="block mb-2 text-sm font-medium text-gray-600 w-full">Type of Examination</label>
-                                <input id="examination_type" disabled value="{{ $application->education->examination_type }}" class="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none">
-                            </div>
-                            <div class="block w-full mt-4">
-                                <label for="subject_name" class="block mb-2 text-sm font-medium text-gray-600 w-full">Subject Name</label>
-                                <input id="subject_name" disabled value="{{ $application->education->subject_name }}" class="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none">
-                            </div>
-                            <div class="block w-full mt-4">
-                                <label for="grade" class="block mb-2 text-sm font-medium text-gray-600 w-full">Grade</label>
-                                <input id="grade" disabled value="{{ $application->education->grade }}" class="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none">
-                            </div>
-                            <div class="block w-full mt-4">
-                                <label for="year" class="block mb-2 text-sm font-medium text-gray-600 w-full">Year</label>
-                                <input id="year" disabled value="{{ $application->education->year }}" class="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none">
-                            </div>
-                            @if (! $application->completed)
-                                {{-- <div class="mt-4 mb-4">
-                                    <a href="{{ route('education.edit', ['education' => $application->education->id ])}}">
-                                        Edit education and qualifications
-                                    </a>
-                                </div> --}}
-                            @endif
+                            @if ($application->educations->count() > 0)
+                                <div class="py-4">
+                                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                                        @foreach ($application->educations as $index => $education)
+                                        <div class="bg-white my-4 overflow-hidden shadow-sm sm:rounded-lg">
+                                            <div class="p-6 text-gray-900 ">
+                                                <div class="flex">
+                                                    <div>
+                                                        <p>{{ __("Examination No. ".$index + 1) }}</p>
+                                                        <p><strong>Examination Type: {{$education->examination_type }} </strong></p>
+                                                        <p><strong>Examination Year: {{$education->year }} </strong></p>
+                                                    </div>
+                                                    @if (! $application->completed)
+                                                    <div>
+                                                        <a href="{{ route('education.edit', ['education' => $education->id] ) }}">
+                                                            <x-primary-button style="margin:10px" type="button"> Edit education </x-primary-button>
+                                                        </a>
+                                                    </div>
+                                                    @endif
+                                                </div>
+
+                                                <div class="flex flex-col">
+                                                    <div class=" overflow-x-auto">
+                                                        <div class="min-w-full inline-block align-middle">
+                                                            <div class="overflow-hidden border rounded-lg border-gray-300">
+                                                                <table class=" min-w-full rounded-xl">
+                                                                    <thead>
+                                                                        <tr class="bg-gray-50">
+                                                                            <th scope="col" class="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"> S/N </th>
+                                                                            <th scope="col" class="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"> Subject Name </th>
+                                                                            <th scope="col" class="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize"> Grade </th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach ($education->grades as $sn => $grade )
+                                                                        <tr class="odd:bg-white even:bg-gray-100">
+                                                                            <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900 "> {{ $sn + 1 }}</td>
+                                                                            <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900"> {{ $grade->subject_name }} </td>
+                                                                            <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900"> {{ $grade->grade }} </td>
+                                                                        </tr>
+                                                                        @endforeach
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (! $application->completed)
+                                                @if($education->grades->count() == 0)
+                                                    <a href="{{ route('grade.create', ['education' => $education->id]) }}">
+                                                        <x-primary-button style="margin:10px" type="button"> Add grades </x-primary-button>
+                                                    </a>
+                                                    @else
+                                                    <a href="{{ route('grade.edit', ['education' => $education->id] ) }}">
+                                                        <x-primary-button style="margin:10px" type="button"> Edit grades </x-primary-button>
+                                                    </a>
+                                                @endif
+                                            @endif
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
                             @else
                             <p class="mx-auto mt-4 mb-4">No education and qualifications info yet. Please continue you application</p>
                             @endif
                         </div>
-
                         @if(! $application->completed)
-                            @if($application->courseApplication && $application->education && $application->personalDetails)
+                            @if($application->courseApplication && $application->educations->count() > 0 && $application->personalDetails)
                             <a href="{{ route('application.submit')}}">
                                 <x-primary-button>Submit your application</x-primary-button>
                             </a>
@@ -165,5 +203,4 @@
             </div>
         </div>
     </div>
-    
 </x-app-layout>

@@ -9,10 +9,8 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white  overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900 ">
-                        
-                            <p>{{ __("Course you are applying for") }}</p>
-                            <strong>Form No: {{$application_code }} </strong>
-
+                            <p>{{ __("Fill your personal details here") }}</p>
+                            <strong>Form No: {{$application->application_code }} </strong>
                             <form class="mx-auto lg:w-[50%]" action="{{ route('personal-detail.store')}}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 {{-- {{ $errors }} --}}
@@ -83,26 +81,27 @@
                                 </div>
 
                                 <div class="block w-full m-4">
-                                    <label for="state_of_origin" class="block mb-2 text-sm font-medium text-gray-600 w-full">State of Origin</label>
-                                    <x-text-input id="state_of_origin" name="state_of_origin" value="{{ old('state_of_origin', '') }}" class="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none">
-                                    </x-text-input>
+                                    <label for="state" class="block mb-2 text-sm font-medium text-gray-600 w-full">State of Origin</label>
+                                    <select id="state" name="state_of_origin" value="{{ old('state_of_origin', '') }}" class="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none">
+                                        <option value="">Select State</option>
+                                    </select>
                                     <span class="text-red-500 text-sm"> {{ $errors->first('state_of_origin')}} </span>
                                 </div>
 
                                 <div class="block w-full m-4">
-                                    <label for="local_government" class="block mb-2 text-sm font-medium text-gray-600 w-full">Local Government</label>
-                                    <x-text-input id="local_government" name="local_government" value="{{ old('local_government', '') }}" class="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none">
-                                    </x-text-input>
+                                    <label for="lga" class="block mb-2 text-sm font-medium text-gray-600 w-full">Local Government</label>
+                                    <select id="lga" name="local_government" value="{{ old('local_government', '') }}" class="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none">
+                                        <option value="">Select LGA</option>
+                                    </select>
                                     <span class="text-red-500 text-sm"> {{ $errors->first('local_government')}} </span>
                                 </div>
 
                                 <div class="block w-full m-4">
-                                    <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-600 w-full">Local Government</label>
+                                    <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-600 w-full">Phone Number</label>
                                     <x-text-input id="phone_number" name="phone_number" value="{{ old('phone_number', '') }}" class="h-12 border border-gray-300 text-gray-600 text-base rounded-lg block w-full py-2.5 px-4 focus:outline-none">
                                     </x-text-input>
                                     <span class="text-red-500 text-sm"> {{ $errors->first('phone_number')}} </span>
                                 </div>
-                                
 
                                 <div class="block w-full m-4">
                                     <label for="passport_photograph" class="block mb-2 text-sm font-medium text-gray-600 w-full">Upload passport photograph</label>
@@ -116,12 +115,11 @@
                                     <span class="text-red-500 text-sm"> {{ $errors->first('signature')}} </span>
                                 </div>
 
-                                <x-primary-button type="submit"> Save </x-primary-button>
+                                <x-primary-button type="submit"> Next </x-primary-button>
                             </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
 </x-app-layout>

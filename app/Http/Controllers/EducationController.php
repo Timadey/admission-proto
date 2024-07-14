@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\ExaminationType;
 use App\Models\Education;
+use App\Traits\DetermineApplicationStep;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class EducationController extends Controller
 {
+    use DetermineApplicationStep;
     /**
      * Display a listing of the resource.
      */
@@ -23,7 +25,7 @@ class EducationController extends Controller
     public function create()
     {
         return view('education.create', [
-            'application_code' => auth()->user()->application->application_code,
+            'application' => auth()->user()->application,
             'examinationTypes' => ExaminationType::cases(),
         ]);
     }
@@ -35,13 +37,12 @@ class EducationController extends Controller
     {
         $validated = $request->validate([
             'examination_type' => ['required', Rule::enum(ExaminationType::class)],
-            'subject_name' => ['required', 'max:128'],
-            'grade' => ['required', 'max:128'],
             'year' => ['required', 'date', 'before:today'],
         ]);
 
-        $education = auth()->user()->application->education()->create($validated);
-        return redirect(route('application.index'));
+        $education = auth()->user()->application->educations()->create($validated);
+        return redirect(route('grade.create', ['education' => $education->id]));
+
     }
 
     /**
@@ -58,8 +59,8 @@ class EducationController extends Controller
     public function edit(Education $education)
     {
         return view('education.edit', [
-            'application' => auth()->user()->application,
-            'examination_types' => ExaminationType::cases(),
+            'education' => $education,
+            'examinationTypes' => ExaminationType::cases(),
             'education' => $education,
         ]);
     }
@@ -71,13 +72,11 @@ class EducationController extends Controller
     {
         $validated = $request->validate([
             'examination_type' => ['required', Rule::enum(ExaminationType::class)],
-            'subject_name' => ['required', 'max:128'],
-            'grade' => ['required', 'max:128'],
             'year' => ['required', 'date', 'before:today'],
         ]);
 
         $education = $education->update($validated);
-        return redirect(route('application.index'));
+        return redirect(route('education.create'));
     }
 
     /**

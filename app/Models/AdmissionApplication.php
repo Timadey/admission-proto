@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class AdmissionApplication extends Model
@@ -15,13 +16,21 @@ class AdmissionApplication extends Model
     protected $fillable = [
         'user_id',
         'application_code',
-        'course_application_id',
-        'personal_details_id',
-        'education_id',
-        'professional_qualifications_id',
-        'professional_organisations_id',
-        'attestations_id',
+        'completed',
+        'applied_at',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'completed' => 'boolean',
+        ];
+    }
 
    /**
     * Get the user that owns the AdmissionApplication
@@ -44,13 +53,13 @@ class AdmissionApplication extends Model
    }
 
     /**
-    * Get the education associated with the AdmissionApplication
+    * Get the educations associated with the AdmissionApplication
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasOne
     */
-    public function education(): HasOne
+    public function educations(): HasMany
     {
-        return $this->hasOne(Education::class, 'application_code', 'application_code');
+        return $this->hasMany(Education::class, 'application_code', 'application_code');
     }
 
     /**

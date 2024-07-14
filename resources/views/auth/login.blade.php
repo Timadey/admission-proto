@@ -18,7 +18,6 @@
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
-        {{ $errors }}
         <!-- Email Address -->
         <div>
             <x-input-label for="application_form_number" :value="__('Application Form Number')" />

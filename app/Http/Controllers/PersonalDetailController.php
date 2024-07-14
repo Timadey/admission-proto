@@ -6,11 +6,13 @@ use App\Gender;
 use App\Models\PersonalDetail;
 use App\Religion;
 use App\Title;
+use App\Traits\DetermineApplicationStep;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class PersonalDetailController extends Controller
 {
+    use DetermineApplicationStep;
     /**
      * Display a listing of the resource.
      */
@@ -24,14 +26,18 @@ class PersonalDetailController extends Controller
      */
     public function create()
     {
+        $application = auth()->user()->application;
+
+        if ($application->personalDetails){
+            return redirect($this->nextStepRoute());
+        }
         return view('personal_details.create', [
-            'application_code' => auth()->user()->application->application_code,
+            'application' => $application,
             'titles' => Title::cases(),
             'genders' => Gender::cases(),
             'religions' => Religion::cases(),
 
         ]);
-        
     }
 
     /**
@@ -67,7 +73,7 @@ class PersonalDetailController extends Controller
         }
 
         $personalDetail = auth()->user()->application->personalDetails()->create($validated);
-        return redirect(route('application.index'));
+        return redirect($this->nextStepRoute());
     }
 
     /**
@@ -126,7 +132,7 @@ class PersonalDetailController extends Controller
         }
 
         $personalDetail = $personalDetail->update($validated);
-        return redirect(route('application.index'));
+        return redirect($this->nextStepRoute());
     }
 
     /**

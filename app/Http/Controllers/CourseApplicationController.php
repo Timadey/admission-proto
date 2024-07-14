@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\CourseApplication;
 use App\Program;
+use App\Traits\DetermineApplicationStep;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class CourseApplicationController extends Controller
 {
+    use DetermineApplicationStep;
     /**
      * Display a listing of the resource.
      */
@@ -22,8 +24,14 @@ class CourseApplicationController extends Controller
      */
     public function create()
     {
+        $application = auth()->user()->application;
+
+        if ($application->courseApplication){
+            return redirect($this->nextStepRoute());
+        }
+
         return view('course_application.create', [
-            'application' => auth()->user()->application,
+            'application' => $application,
             'programs' => Program::cases()
         ]);
     }
@@ -40,8 +48,8 @@ class CourseApplicationController extends Controller
 
         $application = auth()->user()->application;
         // $validated['application_code'] = $application->application_code;
-        $courseApplication = $application->courseApplication()->create($validated);
-        return redirect(route('application.index'));
+        $application->courseApplication()->create($validated);
+        return redirect($this->nextStepRoute($application));
     }
 
     /**
@@ -73,8 +81,8 @@ class CourseApplicationController extends Controller
             'second_choice' => ['required', Rule::enum(Program::class)],
         ]);
 
-        $application = $courseApplication->update($validated);
-        return redirect(route('application.index'));
+        $courseApplication->update($validated);
+        return redirect($this->nextStepRoute());
     }
 
     /**

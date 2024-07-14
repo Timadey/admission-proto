@@ -35,4 +35,5 @@
         </div>
     </body>
     <script src="https://cdn.jsdelivr.net/npm/pagedone@1.1.2/src/js/pagedone.js"></script>
+    <script src="{{ asset('state-lga.js') }}"></script>
 </html>

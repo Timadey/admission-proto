@@ -12,7 +12,7 @@
                     <div class="p-6 text-gray-900 ">
                         @if ($application)
                             @if($application->completed == true)
-                            <p class="mb-4 text-green-600" =>{{ __("Your application has been submitted and undergoing processing. You can view your submission in the meantime") }}</p>
+                            <p class="mb-4 text-green-600" >{{ __("Your application has been submitted and undergoing processing. You can view your submission in the meantime") }}</p>
                             @else
                             <p class="mb-4 text-green-600">{{ __("Application fee paid successfully. View or continue your application") }}</p>
                             <p class="mb-4">{{ __("You can fill the forms seperately. When you are done, click the submit application button") }}</p>
@@ -57,10 +57,10 @@
                                         </a>
                                     </li>
 
-                                    <li class="relative flex-1 after:content-['']  after:w-0.5 after:h-full @if($application->education) after:bg-indigo-600 @else after:bg-gray-200 @endif after:inline-block after:absolute after:-bottom-11 after:left-4 lg:after:left-5">
-                                        <a  href=" @if($application->education){{ route('education.edit', ['education' => $application->education->id])}} @else {{ route('education.create')}} @endif" class="flex items-center font-medium w-full  ">
-                                            <span class="w-8 h-8 @if($application->education) bg-indigo-600 @else bg-indigo-50 @endif border-2 border-transparent rounded-full flex justify-center items-center mr-3 text-sm @if($application->education) text-white @else text-indigo-600 @endif lg:w-10 lg:h-10">
-                                                @if($application->education)
+                                    <li class="relative flex-1 after:content-['']  after:w-0.5 after:h-full @if($application->educations->count() > 0) after:bg-indigo-600 @else after:bg-gray-200 @endif after:inline-block after:absolute after:-bottom-11 after:left-4 lg:after:left-5">
+                                        <a  href="{{ route('education.create')}}" class="flex items-center font-medium w-full  ">
+                                            <span class="w-8 h-8 @if($application->educations->count() > 0) bg-indigo-600 @else bg-indigo-50 @endif border-2 border-transparent rounded-full flex justify-center items-center mr-3 text-sm @if($application->educations->count() > 0) text-white @else text-indigo-600 @endif lg:w-10 lg:h-10">
+                                                @if($application->educations->count() > 0)
                                                 <svg class="w-5 h-5 stroke-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M5 12L9.28722 16.2923C9.62045 16.6259 9.78706 16.7927 9.99421 16.7928C10.2014 16.7929 10.3681 16.6262 10.7016 16.2929L20 7" stroke="stroke-current" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="my-path"></path>
                                                 </svg>
@@ -69,7 +69,7 @@
                                                 @endif
                                             </span>
                                             <div class="block">
-                                                <h4 class="text-lg  @if($application->education) text-green-600 @else text-indigo-600 @endif">Step 3</h4>
+                                                <h4 class="text-lg  @if($application->educations->count() > 0) text-green-600 @else text-indigo-600 @endif">Step 3</h4>
                                                 <span class="text-sm">Education and Qualification</span>
                                             </div>
                                         </a>
@@ -78,10 +78,16 @@
                                 </ol>
                             </div>
                             @endif
-
-                            <a class="mt-4 mb-4" href="{{ route('application.preview') }}" >
-                            <x-primary-button >{{$application->completed ? __('Preview your application') : __('Submit your application') }}</x-primary-button>
+                            
+                            @if ($application->completed)
+                            <a class="mt-4 mb-4" href="{{ route('application.print', ['application_code' => $application->application_code]) }}" >
+                                <x-primary-button >{{__('Print your application form')}}</x-primary-button>
                             </a>
+                            @else
+                            <a class="mt-4 mb-4" href="{{ route('application.preview') }}" >
+                                <x-primary-button >{{ __('Preview your application') }}</x-primary-button>
+                            </a>
+                            @endif
 
                         @else
                             <p>{{ __("Application fee payment pending. Pay your application fee to proceed with your registration.") }}</p>

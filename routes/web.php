@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdmissionApplicationController;
 use App\Http\Controllers\CourseApplicationController;
 use App\Http\Controllers\EducationController;
+use App\Http\Controllers\GradeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PersonalDetailController;
 use App\Http\Controllers\ProfessionalOrganisationController;
@@ -21,7 +22,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/preview', [AdmissionApplicationController::class, 'preview'])->name('application.preview');
     Route::get('/submit-application', [AdmissionApplicationController::class, 'submitApplication'])->name('application.submit');
     Route::get('/pay-application', [AdmissionApplicationController::class, 'store'])->name('application.store');
-    // Route::get('/confirm-application-payment', [AdmissionApplicationController::class, 'confirmAppPayment'])->name('application.confirm-app-payment');
+    Route::get('/print/{application_code}', [AdmissionApplicationController::class, 'print'])->name('application.print');
 
     Route::get('/course-application/create', [CourseApplicationController::class, 'create'])->name('course-application.create');
     Route::post('/course-application/store', [CourseApplicationController::class, 'store'])->name('course-application.store');
@@ -32,6 +33,11 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::post('/education/store', [EducationController::class, 'store'])->name('education.store');
     Route::get('/education/edit/{education}', [EducationController::class, 'edit'])->name('education.edit');
     Route::patch('/education/update/{education}', [EducationController::class, 'update'])->name('education.update');
+
+    Route::get('/grade/create/{education}', [GradeController::class, 'create'])->name('grade.create');
+    Route::post('/grade/store/{education}', [GradeController::class, 'store'])->name('grade.store');
+    Route::get('/grade/edit/{education}', [GradeController::class, 'edit'])->name('grade.edit');
+    Route::patch('/grade/update/{education}', [GradeController::class, 'update'])->name('grade.update');
 
     Route::get('/personal-detail/create', [PersonalDetailController::class, 'create'])->name('personal-detail.create');
     Route::post('/personal-detail/store', [PersonalDetailController::class, 'store'])->name('personal-detail.store');
