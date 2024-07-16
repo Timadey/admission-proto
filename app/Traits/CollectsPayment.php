@@ -7,9 +7,73 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Ramsey\Uuid\Uuid;
-
 trait CollectsPayment
 {
+    /**
+     * Makes payment using paystack
+     */
+    public function makePaystackPayment($data, $price, $redirect_url)
+    {
+        $payload = [
+            'reference' => $data['reference'],
+            'email'=> $data['email'],
+            'amount' => $price,
+            'currency' => "NGN",
+            'callback_url' => $redirect_url,
+            "metadata" => json_encode([
+                'customer' => [
+                    'email' => $data['email'],
+                    'name' => $data['name'],
+                ],
+                "custom_fields" => [
+                    [
+                        'display_name' => 'Customer Name',
+                        'variable_name' => 'Institution Name',
+                        'value' => $data['name'],
+                    ]
+                ]
+            ]),
+                  
+            
+        ];
+        // Initiate payment
+        $SECRET_KEY = env('PAYSTACK_SECRET_KEY');
+        $response = Http::withToken($SECRET_KEY)
+        ->post("https://api.paystack.co/transaction/initialize", $payload);
+
+        $flw = $response->object();
+
+
+        return $flw;
+
+        
+    }
+
+    /**
+     * Obtain Paystack payment information
+     * @return void
+     */
+    public function confirmPaystackPayment(Request $request,  Closure $giveValueFunc)
+    {
+        $query = (object) $request->query();
+        $trxref = $query->trxref ?? null;
+        $reference = $query->reference  ?? null;
+
+        if ($trxref == $reference){
+            $SECRET_KEY = env('PAYSTACK_SECRET_KEY');
+            $response = Http::withToken($SECRET_KEY)
+            ->get("https://api.paystack.co/transaction/verify/$trxref");
+            
+            $flw = $response->object();
+
+            if ($flw->status === true){
+                $user = $flw->data->metadata->customer;
+                return $giveValueFunc($user, $request);
+            }
+        }
+        return redirect(route('application.index'));
+    }
+
     /**
      * Make a payment
      * 
@@ -63,7 +127,8 @@ trait CollectsPayment
 
             if ($flw->status === "success"){
                 $flw_data = $flw->data;
-                return $giveValueFunc($flw_data);
+                $user = $flw_data->customer;
+                return $giveValueFunc($user);
             }
         }
         return redirect(route('application.index'));

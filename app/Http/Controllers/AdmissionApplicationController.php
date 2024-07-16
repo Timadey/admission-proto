@@ -34,31 +34,32 @@ class AdmissionApplicationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        // Check if there is payment involved
-        $price = "25000";
-        if ( (int) $price > 0){
-            $data = [
-                'email' => auth()->user()->email,
-                'name' => auth()->user()->name
-            ];
-            $flw = $this->makePayment($data, $price, route('application.confirm-app-payment'));
-            return redirect($flw->data->link);
+    // public function store(Request $request)
+    // {
+    //     // Check if there is payment involved
+    //     $price = "25000";
+    //     if ( (int) $price > 0){
+    //         $data = [
+    //             'email' => auth()->user()->email,
+    //             'name' => auth()->user()->name
+    //         ];
+    //         // $flw = $this->makePayment($data, $price, route('application.confirm-app-payment'));
+    //         $flw = $this->makePaystackPayment($data, $price, route('application.confirm-app-payment'));
+    //         return redirect($flw->data->link);
 
-        }
-    }
+    //     }
+    // }
 
     /**
      * Confirm Payment and make booking
      */
-    public function confirmAppPayment(Request $request)
-    {
+    // public function confirmAppPayment(Request $request)
+    // {
 
-        return $this->confirmPayment($request, function ($data) {
-            return $this->makeApplication($data);
-        } );
-    }
+    //     return $this->confirmPayment($request, function ($data) {
+    //         return $this->makeApplication($data);
+    //     } );
+    // }
 
     public function makeApplication($data){
         $application = auth()->user()->application()->create([
