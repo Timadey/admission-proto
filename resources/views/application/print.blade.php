@@ -1,3 +1,7 @@
+@php
+    use Carbon\Carbon;
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -76,7 +80,7 @@
                         <div>
                             <div>
                                 <div class='text-bold'>Date of Birth</div> 
-                                <div>{{ date("jS F, Y", (int) $application->personalDetails->date_of_birth) }}</div>
+                                <div>{{ Carbon::parse($application->personalDetails->date_of_birth)->format('jS F, Y') }}</div>
                             </div>
                         </div>
 
@@ -165,12 +169,12 @@
     
                     <div id='indus-footer'>
                         <div>
-                            <div><span class='text-bold'>DATE SUBMITTED</span>{{ date("jS F, Y",$application->applied_at) }}</div>
+                            <div><span class='text-bold'>DATE SUBMITTED</span>{{ Carbon::parse($application->applied_at)->format('jS F, Y') }}</div>
                         </div>
     
-                        <div>
+                        {{-- <div>
                             <div style='display:flex;align-items:flex-end;'><span class='text-bold'>SIGNATURE</span> <img src="/{{ $application->personalDetails->signature_url }}"></div>
-                        </div>
+                        </div> --}}
                     </div>
     
                     <button class='btn waves-effect waves-light pulse btn-floating' id='print'><i class='large material-icons'>print</i> </button>
